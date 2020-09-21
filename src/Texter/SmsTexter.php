@@ -13,7 +13,7 @@ class SmsTexter implements TexterInterface
 
     public function __construct(string $serviceDsn, string $key, MailerInterface $mailer)
     {
-        var_dump('voici mon mailer: ' , $mailer);
+        var_dump('Works in SmsTexter: ' , $mailer);
         $this->serviceDsn = $serviceDsn;
         $this->key = $key;
     }
