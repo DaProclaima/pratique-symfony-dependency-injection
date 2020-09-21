@@ -17,9 +17,9 @@ $container->setParameter('password', 'password');
 
 $container->register('order_controller', OrderController::class)
     ->setArguments([
-        new \Symfony\Component\DependencyInjection\Reference('database'),
-        new \Symfony\Component\DependencyInjection\Reference('mailer.gmail'),
-        new \Symfony\Component\DependencyInjection\Reference('texter.sms')
+        new \Symfony\Component\DependencyInjection\Reference(Database::class),
+        new \Symfony\Component\DependencyInjection\Reference(GmailMailer::class),
+        new \Symfony\Component\DependencyInjection\Reference(SmsTexter::class)
     ])
     ->addMethodCall('sayHello', [
         'Bonjour à tous',
@@ -28,19 +28,20 @@ $container->register('order_controller', OrderController::class)
         new \Symfony\Component\DependencyInjection\Reference('mailer.gmail')
     ]);
 
-$container->register('mailer.gmail', GmailMailer::class)
-    ->setArguments([
-        "%mailer.gmail_user%",
-        "%password%"
-    ]);
-$container->register('texter.sms', SmsTexter::class)
-    ->setArguments([
-        "service.sms.com",
-        "apikey123"
-    ]);
 $container->register('database', Database::class);
 
-$controller =  $container->get('order_controller');
+$container->register('texter.sms', SmsTexter::class)
+    ->setArguments(["service.sms.com", "apikey123"]);
+
+$container->register('mailer.gmail', GmailMailer::class)
+    ->setArguments(["%mailer.gmail_user%", "%password%"]);
+
+$container->setAlias('App\Controller\OrderController', 'order_controller');
+$container->setAlias('App\Database\Database', 'database');
+$container->setAlias('App\Mailer\GmailMailer', 'mailer.gmail');
+$container->setAlias('App\Texter\SmsTexter', 'texter.sms');
+
+$controller = $container->get(OrderController::class);
 
 $httpMethod = $_SERVER['REQUEST_METHOD'];
 
