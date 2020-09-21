@@ -14,21 +14,40 @@ error_reporting(E_ALL);
 require __DIR__ . '/vendor/autoload.php';
 
 $container = new \Symfony\Component\DependencyInjection\ContainerBuilder();
+$container->autowire('logger', \App\Logger::class);
+//$container->register('database', Database::class)
+//    ->setAutowired(true);
+$container->autowire('database', Database::class);
 
-$container->register('database', Database::class);
-
-$container->register('texter.sms', SmsTexter::class)
+//$container->register('texter.sms', SmsTexter::class)
+//    ->setAutowired(true)
+////    those are not services but strings, so this methods needs to remain
+//    ->setArguments(["service.sms.com", "apikey123"]);
+$container->autowire('texter.sms', SmsTexter::class)->addMethodCall('setLogger', [
+    new \Symfony\Component\DependencyInjection\Reference('logger')
+])
     ->setArguments(["service.sms.com", "apikey123"]);
 
-$container->register('mailer.gmail', GmailMailer::class)
+//$container->register('mailer.gmail', GmailMailer::class)
+//    ->setAutowired(true)
+//    ->setArguments(["%mailer.gmail_user%", "%password%"]);
+
+$container->autowire('mailer.gmail', GmailMailer::class)->addMethodCall('setLogger', [
+    new \Symfony\Component\DependencyInjection\Reference('logger')
+])
     ->setArguments(["%mailer.gmail_user%", "%password%"]);
 $container->setParameter('mailer.gmail_user', "snitpro@gmail.com");
 $container->setParameter('password', 'password');
 
-$container->register('mailer.smtp', SmtpMailer::class)
+//$container->register('mailer.smtp', SmtpMailer::class)
+//    ->setAutowired(true)
+//    ->setArguments(['smtp:localhost', 'root', '123']);
+$container->autowire('mailer.smtp', SmtpMailer::class)
     ->setArguments(['smtp:localhost', 'root', '123']);
 
-$container->register('texter.fax', FaxTexter::class);
+//$container->register('texter.fax', FaxTexter::class)
+//    ->setAutowired(true);
+$container->autowire('texter.fax', FaxTexter::class);
 
 $container->setAlias('App\Controller\OrderController', 'order_controller')->setPublic(true);
 $container->setAlias('App\Database\Database', 'database');
