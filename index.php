@@ -3,6 +3,8 @@
 use App\Controller\OrderController;
 use App\Database\Database;
 use App\Mailer\GmailMailer;
+use App\Mailer\SmtpMailer;
+use App\Texter\FaxTexter;
 use App\Texter\SmsTexter;
 
 ini_set('display_errors', 1);
@@ -12,8 +14,30 @@ error_reporting(E_ALL);
 require __DIR__ . '/vendor/autoload.php';
 
 $container = new \Symfony\Component\DependencyInjection\ContainerBuilder();
+
+$container->register('database', Database::class);
+
+$container->register('texter.sms', SmsTexter::class)
+    ->setArguments(["service.sms.com", "apikey123"]);
+
+$container->register('mailer.gmail', GmailMailer::class)
+    ->setArguments(["%mailer.gmail_user%", "%password%"]);
 $container->setParameter('mailer.gmail_user', "snitpro@gmail.com");
 $container->setParameter('password', 'password');
+
+$container->register('mailer.smtp', SmtpMailer::class)
+    ->setArguments(['smtp:localhost', 'root', '123']);
+
+$container->register('texter.fax', FaxTexter::class);
+
+$container->setAlias('App\Controller\OrderController', 'order_controller');
+$container->setAlias('App\Database\Database', 'database');
+$container->setAlias('App\Mailer\GmailMailer', 'mailer.gmail');
+$container->setAlias('App\Mailer\SmtpMailer', 'mailer.smtp');
+$container->setAlias('App\Mailer\MailerInterface', 'mailer.gmail');
+$container->setAlias('App\Texter\SmsTexter', 'texter.sms');
+$container->setAlias('App\Texter\FaxTexter', 'texter.fax');
+$container->setAlias('App\Texter\TexterInterface', 'texter.sms');
 
 $container->register('order_controller', OrderController::class)
     ->setArguments([
@@ -25,22 +49,8 @@ $container->register('order_controller', OrderController::class)
         'Bonjour à tous',
         33
     ])->addMethodCall('setSecondaryMailer', [
-        new \Symfony\Component\DependencyInjection\Reference('mailer.gmail')
+        new \Symfony\Component\DependencyInjection\Reference(GmailMailer::class)
     ]);
-
-$container->register('database', Database::class);
-
-$container->register('texter.sms', SmsTexter::class)
-    ->setArguments(["service.sms.com", "apikey123"]);
-
-$container->register('mailer.gmail', GmailMailer::class)
-    ->setArguments(["%mailer.gmail_user%", "%password%"]);
-
-$container->setAlias('App\Controller\OrderController', 'order_controller');
-$container->setAlias('App\Database\Database', 'database');
-$container->setAlias('App\Mailer\GmailMailer', 'mailer.gmail');
-$container->setAlias('App\Texter\SmsTexter', 'texter.sms');
-
 $controller = $container->get(OrderController::class);
 
 $httpMethod = $_SERVER['REQUEST_METHOD'];
