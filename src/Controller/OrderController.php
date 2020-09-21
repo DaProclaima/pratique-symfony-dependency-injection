@@ -13,6 +13,7 @@ class OrderController
 {
     protected $texter;
     protected $mailer;
+    protected $secondaryMailer;
     protected $database;
 
     public function __construct(Database $database, MailerInterface $mailer, TexterInterface $texter)
@@ -21,6 +22,7 @@ class OrderController
         $this->mailer = $mailer;
         $this->texter = $texter;
     }
+
 
     public function placeOrder()
     {
@@ -40,5 +42,17 @@ class OrderController
             ->setContent("Félicitation, votre commande arrive !");
 
         $this->texter->send($textMessage);
+    }
+
+    public function sayHello(string $message, int $number)
+    {
+        var_dump("HELLO $message $number");
+    }
+    
+    public function setSecondaryMailer(MailerInterface $mailer)
+    {
+
+        $this->secondaryMailer = $mailer;
+        var_dump('Voilà le secondaryMailer');
     }
 }
