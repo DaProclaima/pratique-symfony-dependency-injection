@@ -30,8 +30,8 @@ $container->register('order_controller', OrderController::class)
 
 $container->register('mailer.gmail', GmailMailer::class)
     ->setArguments([
-        "%mailer.gmail_user",
-        "%password"
+        "%mailer.gmail_user%",
+        "%password%"
     ]);
 $container->register('texter.sms', SmsTexter::class)
     ->setArguments([
