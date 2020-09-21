@@ -30,7 +30,7 @@ $container->register('mailer.smtp', SmtpMailer::class)
 
 $container->register('texter.fax', FaxTexter::class);
 
-$container->setAlias('App\Controller\OrderController', 'order_controller');
+$container->setAlias('App\Controller\OrderController', 'order_controller')->setPublic(true);
 $container->setAlias('App\Database\Database', 'database');
 $container->setAlias('App\Mailer\GmailMailer', 'mailer.gmail');
 $container->setAlias('App\Mailer\SmtpMailer', 'mailer.smtp');
@@ -50,8 +50,22 @@ $container->register('order_controller', OrderController::class)
         33
     ])->addMethodCall('setSecondaryMailer', [
         new \Symfony\Component\DependencyInjection\Reference(GmailMailer::class)
-    ]);
+    ])
+    ->setPublic(true);
+
+//Useful:
+// To optimise definitions of services
+// Detect potential configuration errors  (like circular references: i ask building a db service requiring controller,
+// and building a controller requiring a db...)
+// To modify definitions in last minute having by hand the whole config
+$container->compile();
+
+
 $controller = $container->get(OrderController::class);
+//error as it is private. but above, the Controller ALIAS is set public and is already built-in with the other services we indirectly embed.
+//$database = $container->get(Database::class);
+// to call the service, it has to be declared public as well
+$controller = $container->get('order_controller');
 
 $httpMethod = $_SERVER['REQUEST_METHOD'];
 
