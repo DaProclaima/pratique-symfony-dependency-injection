@@ -40,18 +40,21 @@ $container->setAlias('App\Texter\FaxTexter', 'texter.fax');
 $container->setAlias('App\Texter\TexterInterface', 'texter.sms');
 
 $container->register('order_controller', OrderController::class)
-    ->setArguments([
-        new \Symfony\Component\DependencyInjection\Reference(Database::class),
-        new \Symfony\Component\DependencyInjection\Reference(GmailMailer::class),
-        new \Symfony\Component\DependencyInjection\Reference(SmsTexter::class)
-    ])
+    ->setPublic(true)
+//    ->setArguments([
+//        new \Symfony\Component\DependencyInjection\Reference(Database::class),
+//        new \Symfony\Component\DependencyInjection\Reference(GmailMailer::class),
+//        new \Symfony\Component\DependencyInjection\Reference(SmsTexter::class)
+//    ])
+//        once it is compiled, the container knows the arguments a service needs to be built, provided by alias or service name.
+//        + grant to add other dependency injections in construct method without requiring us to add it in setArguments
+    ->setAutowired(true)
     ->addMethodCall('sayHello', [
         'Bonjour à tous',
         33
     ])->addMethodCall('setSecondaryMailer', [
         new \Symfony\Component\DependencyInjection\Reference(GmailMailer::class)
-    ])
-    ->setPublic(true);
+    ]);
 
 //Useful:
 // To optimise definitions of services
