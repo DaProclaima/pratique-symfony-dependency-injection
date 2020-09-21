@@ -48,7 +48,7 @@ class OrderController
     {
         var_dump("HELLO $message $number");
     }
-    
+
     public function setSecondaryMailer(MailerInterface $mailer)
     {
 

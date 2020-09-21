@@ -13,17 +13,30 @@ require __DIR__ . '/vendor/autoload.php';
 
 $container = new \Symfony\Component\DependencyInjection\ContainerBuilder();
 
-$controllerDefinition = new \Symfony\Component\DependencyInjection\Definition(OrderController::class, [
-    new \Symfony\Component\DependencyInjection\Reference('database'),
-    new \Symfony\Component\DependencyInjection\Reference('mailer.gmail'),
-    new \Symfony\Component\DependencyInjection\Reference('texter.sms')
-]);
+//$controllerDefinition = new \Symfony\Component\DependencyInjection\Definition(OrderController::class, [
+//    new \Symfony\Component\DependencyInjection\Reference('database'),
+//    new \Symfony\Component\DependencyInjection\Reference('mailer.gmail'),
+//    new \Symfony\Component\DependencyInjection\Reference('texter.sms')
+//]);
+$container->register('order_controller', OrderController::class)
+    ->setArguments([
+        new \Symfony\Component\DependencyInjection\Reference('database'),
+        new \Symfony\Component\DependencyInjection\Reference('mailer.gmail'),
+        new \Symfony\Component\DependencyInjection\Reference('texter.sms')
+    ])
+    ->addMethodCall('sayHello', [
+        'Bonjour à tous',
+        33
+    ])->addMethodCall('setSecondaryMailer', [
+        new \Symfony\Component\DependencyInjection\Reference('mailer.gmail')
+    ]);
+;
 
 //$databaseDefinition = new \Symfony\Component\DependencyInjection\Definition('App\Database\Database');
-$databaseDefinition = new \Symfony\Component\DependencyInjection\Definition(Database::class);
+//$databaseDefinition = new \Symfony\Component\DependencyInjection\Definition(Database::class);
 
 //$container->set('database', new Database());
-$container->setDefinition('database', $databaseDefinition);
+//$container->setDefinition('database', $databaseDefinition);
 
 //$smsTexterDefinition = new \Symfony\Component\DependencyInjection\Definition(SmsTexter::class);
 //$smsTexterDefinition->addArgument("service.sms.com")->addArgument("apikey123");
@@ -31,30 +44,42 @@ $container->setDefinition('database', $databaseDefinition);
 //    "service.sms.com",
 //    "apikey123"
 //]);
-$smsTexterDefinition = new \Symfony\Component\DependencyInjection\Definition(SmsTexter::class, [
-    "service.sms.com",
-    "apikey123"
-]);
-$container->setDefinition('texter.sms', $smsTexterDefinition);
+//$smsTexterDefinition = new \Symfony\Component\DependencyInjection\Definition(SmsTexter::class, [
+//    "service.sms.com",
+//    "apikey123"
+//]);
+//$container->setDefinition('texter.sms', $smsTexterDefinition);
 
-$gmailMailerDefinition =  new \Symfony\Component\DependencyInjection\Definition(GmailMailer::class, [
-    "snitpro@gmail.com",
-    "password"
-]);
-$container->setDefinition('mailer.gmail', $gmailMailerDefinition);
+//$gmailMailerDefinition =  new \Symfony\Component\DependencyInjection\Definition(GmailMailer::class, [
+//    "snitpro@gmail.com",
+//    "password"
+//]);
+//$container->setDefinition('mailer.gmail', $gmailMailerDefinition);
+$container->register('mailer.gmail', GmailMailer::class)
+    ->setArguments([
+        "snitpro@gmail.com",
+        "password"
+    ]);
+$container->register('texter.sms', SmsTexter::class)
+    ->setArguments([
+        "service.sms.com",
+        "apikey123"
+    ]);
+$container->register('database', Database::class);
+
 
 //$controllerDefinition = new \Symfony\Component\DependencyInjection\Definition(OrderController::class, [
 //    $container->get('database'),
 //    $container->get('mailer.gmail'),
 //    $container->get('texter.sms')
 //]);
-$controllerDefinition->addMethodCall('sayHello', [
-    'Bonjour à tous',
-    33
-])->addMethodCall('setSecondaryMailer', [
-    new \Symfony\Component\DependencyInjection\Reference('mailer.gmail')
-]);
-$container->setDefinition('order_controller', $controllerDefinition);
+//$controllerDefinition->addMethodCall('sayHello', [
+//    'Bonjour à tous',
+//    33
+//])->addMethodCall('setSecondaryMailer', [
+//    new \Symfony\Component\DependencyInjection\Reference('mailer.gmail')
+//]);
+//$container->setDefinition('order_controller', $controllerDefinition);
 
 ////$database = new Database();
 //$database = $container->get('database');
