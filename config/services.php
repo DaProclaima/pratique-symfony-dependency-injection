@@ -23,10 +23,10 @@ return function (\Symfony\Component\DependencyInjection\Loader\Configurator\Cont
     ;
 
     $services
-        ->set('order_controller', OrderController::class)
-        ->public()
-        ->call('sayHello', ['Bonjour à tous', 33])
-        ->call('setSecondaryMailer', [service('mailer.gmail')])
+//        ->set('order_controller', OrderController::class)
+//        ->public()
+//        ->call('sayHello', ['Bonjour à tous', 33])
+//        ->call('setSecondaryMailer', [service('mailer.gmail')])
 
         ->set('logger', Logger::class)
         
