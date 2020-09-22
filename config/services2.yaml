@@ -1,0 +1,22 @@
+services:
+#  and eventually we want all our services to accept any autoconfiguration
+  _defaults:
+    autowire: true
+    autoconfigure: true
+  logger:
+    class: App\Logger
+
+  database:
+    class: App\Database\Database
+
+  mailer.gmail:
+    autoconfigure: true
+    class: App\Mailer\GmailMailer
+    arguments: ["%mailer.gmail_user%", "%mailer.gmail_password%"]
+
+  mailer.smtp:
+    class: App\Mailer\SmtpMailer
+    arguments: ['smtp://localhost', 'root', '123']
+
+  texter.fax:
+    class: App\Texter\FaxTexter
