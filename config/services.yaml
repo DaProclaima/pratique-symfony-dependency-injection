@@ -50,6 +50,6 @@ services:
 
 #  order_controller: "@App\Controller\OrderController"
   order_controller:
-    alias: "App\Controller\OrderController"
+    alias: 'App\Controller\OrderController'
     public: true
 
