@@ -1,6 +1,7 @@
 {
   "require": {
-    "symfony/dependency-injection": "^5.1"
+    "symfony/dependency-injection": "^5.1",
+    "symfony/config": "^5.1"
   },
   "autoload": {
     "psr-4": {
