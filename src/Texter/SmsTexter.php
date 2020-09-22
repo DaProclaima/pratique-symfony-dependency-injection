@@ -2,10 +2,11 @@
 
 namespace App\Texter;
 
+use App\HasLoggerInterface;
 use App\Logger;
 use App\Mailer\MailerInterface;
 
-class SmsTexter implements TexterInterface
+class SmsTexter implements TexterInterface, HasLoggerInterface
 {
     protected $serviceDsn;
     protected $key;
@@ -13,7 +14,7 @@ class SmsTexter implements TexterInterface
 
     public function __construct(string $serviceDsn, string $key, MailerInterface $mailer)
     {
-        var_dump('Works in SmsTexter: ' , $mailer);
+//        var_dump('Works in SmsTexter: ' , $mailer);
         $this->serviceDsn = $serviceDsn;
         $this->key = $key;
     }

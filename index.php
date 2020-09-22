@@ -2,6 +2,7 @@
 
 use App\Controller\OrderController;
 use App\DependencyInjection\LoggerCompilerPass;
+use App\HasLoggerInterface;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
@@ -15,10 +16,13 @@ require __DIR__ . '/vendor/autoload.php';
 
 $container = new ContainerBuilder();
 
+$container->registerForAutoconfiguration(HasLoggerInterface::class)->addTag('with_logger');
+
 //$loader = new PhpFileLoader($container, new FileLocator([__DIR__ . '/config']));
 //$loader->load('services.php');
 $loader = new YamlFileLoader($container, new FileLocator([__DIR__ . '/config']));
 $loader->load('services.yaml');
+$loader->load('services2.yaml');
 
 $container->addCompilerPass(new LoggerCompilerPass());
 

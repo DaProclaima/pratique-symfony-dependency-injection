@@ -2,6 +2,7 @@
 
 use App\Controller\OrderController;
 use App\Database\Database;
+use App\HasLoggerInterface;
 use App\Logger;
 use App\Mailer\GmailMailer;
 use App\Mailer\SmtpMailer;
@@ -20,7 +21,9 @@ return function (\Symfony\Component\DependencyInjection\Loader\Configurator\Cont
 
     $services->defaults()
         ->autowire(true)
+        ->autoconfigure(true)
     ;
+    $services->instanceof(HasLoggerInterface::class)->tag('with_logger');
 
     $services
 //        ->set('order_controller', OrderController::class)
@@ -34,12 +37,10 @@ return function (\Symfony\Component\DependencyInjection\Loader\Configurator\Cont
         
         ->set('texter.sms', SmsTexter::class)
         ->args(["service.sms.com", "apikey123"])
-        ->tag('with_logger')
 
         ->set('mailer.gmail', GmailMailer::class)
         ->args(["%mailer.gmail_user%", "%mailer.gmail_password%"])
-        ->tag('with_logger')
-        
+
         ->set('mailer.smtp', SmtpMailer::class)
         ->args(['smtp:localhost', 'root', '123'])
         

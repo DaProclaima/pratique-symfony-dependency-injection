@@ -3,8 +3,16 @@ parameters:
   mailer.gmail_password: 'password'
 
 services:
+#  done in index.html
+#  with $container->registerForAutoconfiguration(HasLoggerInterface::class)->addTag('with_logger');
+#   + set autoconfigure: true on services to be accepted. We pass 'with_logger'
+  _instanceof:
+    App\HasLoggerInterface:
+      tags: ['with_logger']
+
   _defaults:
     autowire: true
+    autoconfigure: true
 
   order_controller:
     class: App\Controller\OrderController
@@ -15,28 +23,11 @@ services:
       - method: setSecondaryMailer
         arguments: ["@mailer.gmail"]
 
-  logger:
-    class: App\Logger
-
-  database:
-    class: App\Database\Database
-
+# for the example, I want to keep this service here to show _instanceof does cross multiple yamls files
   texter.sms:
+    autoconfigure: true
     class: App\Texter\SmsTexter
-    arguments: ["service.sms.com", "apikey123"]
-    tags: ['with_logger']
-
-  mailer.gmail:
-    class: App\Mailer\GmailMailer
-    arguments: ["%mailer.gmail_user%", "%mailer.gmail_password%"]
-    tags: ['with_logger']
-
-  mailer.smtp:
-    class: App\Mailer\SmtpMailer
-    arguments: ['smtp://localhost', 'root', '123']
-
-  texter.fax:
-    class: App\Texter\FaxTexter
+    arguments: [ "service.sms.com", "apikey123" ]
 
 #    Alias
   App\Controller\OrderController:
