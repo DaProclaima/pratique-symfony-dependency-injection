@@ -18,33 +18,38 @@ services:
 #      $firstname: "Lior"
       $firstname: "%firstname%"
 
-  order_controller:
-    class: App\Controller\OrderController
+# loads all files as services
+  App\:
+    resource: '../src/*'
+    exclude: '../src/{DependencyInjection}'
+
+  App\Controller\TestController:
+    public: true
+
+  App\Controller\OrderController:
     public: true
     calls:
       - method: sayHello
-        arguments: ["Bonjour à tous" , 33]
-      - method: setSecondaryMailer
-        arguments: ["@mailer.gmail"]
-#    arguments:
-#      $firstname : 'Sebastien'
+        arguments: ["Sébastien", 26]
 
-# for the example, I want to keep this service here to show _instanceof does cross multiple yamls files
-  texter.sms:
-    autoconfigure: true
-    class: App\Texter\SmsTexter
-    arguments: [ "service.sms.com", "apikey123" ]
-#    arguments: [ "service.sms.com", "apikey123" , "Sebastien"]
+  App\Mailer\MailerInterface:
+    alias: App\Mailer\GmailMailer
 
-#    Alias
-  App\Controller\OrderController:
-    alias: 'order_controller'
+  App\Texter\TexterInterface:
+    alias: App\Texter\SmsTexter
+
+  App\Mailer\GmailMailer:
+    arguments:
+      - '%mailer.gmail_user%'
+      - '%mailer.gmail_password%'
+
+  App\Texter\SmsTexter:
+    arguments:
+      - "service.sms.com"
+      - "apikey123"
+
+#  order_controller: "@App\Controller\OrderController"
+  order_controller:
+    alias: "App\Controller\OrderController"
     public: true
-  App\Database\Database: '@database'
-  App\Mailer\GmailMailer: '@mailer.gmail'
-  App\Mailer\SmtpMailer: '@mailer.smtp'
-  App\Mailer\MailerInterface: '@mailer.gmail'
-  App\Texter\SmsTexter: '@texter.sms'
-  App\Texter\FaxTexter: '@texter.fax'
-  App\Texter\TexterInterface: '@texter.sms'
-  \App\Logger: '@logger'
+

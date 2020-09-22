@@ -1,6 +1,7 @@
 <?php
 
 use App\Controller\OrderController;
+use App\Controller\TestController;
 use App\DependencyInjection\LoggerCompilerPass;
 use App\HasLoggerInterface;
 use Symfony\Component\Config\FileLocator;
@@ -28,6 +29,8 @@ $container->addCompilerPass(new LoggerCompilerPass());
 
 $container->compile();
 
+$testController = $container->get(TestController::class);
+die();
 $controller = $container->get(OrderController::class);
 
 $httpMethod = $_SERVER['REQUEST_METHOD'];
