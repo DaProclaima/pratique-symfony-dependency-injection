@@ -16,7 +16,7 @@ class OrderController
     protected $secondaryMailer;
     protected $database;
 
-    public function __construct(Database $database, MailerInterface $mailer, TexterInterface $texter)
+    public function __construct(Database $database, MailerInterface $mailer, TexterInterface $texter, string $firstname)
     {
         $this->database = $database;
         $this->mailer = $mailer;

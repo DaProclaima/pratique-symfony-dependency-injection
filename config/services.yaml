@@ -1,6 +1,7 @@
 parameters:
   mailer.gmail_user: 'sebastien@gmail.com'
   mailer.gmail_password: 'password'
+  firstname: "Lior"
 
 services:
 #  done in index.html
@@ -13,6 +14,9 @@ services:
   _defaults:
     autowire: true
     autoconfigure: true
+    bind:
+#      $firstname: "Lior"
+      $firstname: "%firstname%"
 
   order_controller:
     class: App\Controller\OrderController
@@ -22,12 +26,15 @@ services:
         arguments: ["Bonjour à tous" , 33]
       - method: setSecondaryMailer
         arguments: ["@mailer.gmail"]
+#    arguments:
+#      $firstname : 'Sebastien'
 
 # for the example, I want to keep this service here to show _instanceof does cross multiple yamls files
   texter.sms:
     autoconfigure: true
     class: App\Texter\SmsTexter
     arguments: [ "service.sms.com", "apikey123" ]
+#    arguments: [ "service.sms.com", "apikey123" , "Sebastien"]
 
 #    Alias
   App\Controller\OrderController:

@@ -30,11 +30,11 @@ return function (\Symfony\Component\DependencyInjection\Loader\Configurator\Cont
 //        ->public()
 //        ->call('sayHello', ['Bonjour à tous', 33])
 //        ->call('setSecondaryMailer', [service('mailer.gmail')])
-
         ->set('logger', Logger::class)
-        
+
         ->set('database', Database::class)
-        
+        ->arg('$firstname' , 'Sebastien')
+
         ->set('texter.sms', SmsTexter::class)
         ->args(["service.sms.com", "apikey123"])
 

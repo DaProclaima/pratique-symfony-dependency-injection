@@ -12,9 +12,9 @@ class SmsTexter implements TexterInterface, HasLoggerInterface
     protected $key;
     protected $logger;  
 
-    public function __construct(string $serviceDsn, string $key, MailerInterface $mailer)
+    public function __construct(string $serviceDsn, string $key, string $firstname)
     {
-//        var_dump('Works in SmsTexter: ' , $mailer);
+        var_dump("Works in SmsTexter: $firstname");
         $this->serviceDsn = $serviceDsn;
         $this->key = $key;
     }
